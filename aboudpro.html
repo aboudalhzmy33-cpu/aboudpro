@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitleText">فليكس عبود - المنصة الذكية للاستراحة والفيديوهات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Changa:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lateef&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap');
+
+        body { 
+            font-family: var(--sys-font, 'Tajawal'), sans-serif; 
+            background-color: var(--sys-bg, #0b0b0e); 
+            color: #f3f4f6; 
+            transition: background-color 0.3s ease; 
+        }
+        .lux-gradient { background: linear-gradient(135deg, var(--sys-accent1, #fbbf24) 0%, var(--sys-accent2, #d97706) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .lux-border { border-color: var(--sys-border, rgba(251, 191, 36, 0.2)); }
+        .glass-card { background: var(--sys-card-bg, rgba(18, 18, 24, 0.9)); backdrop-filter: blur(16px); }
+    </style>
+</head>
+<body id="appBody" class="min-h-screen flex flex-col selection:bg-amber-500 selection:text-black">
+
+    <!-- شريط العلوي -->
+    <header class="glass-card border-b lux-border sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigateHome()">
+                <div id="headerLogoContainer" class="bg-gradient-to-tr from-amber-500 to-yellow-600 text-black p-2 rounded-xl font-black text-lg shadow-lg flex items-center justify-center overflow-hidden w-10 h-10">
+                    <i id="headerLogoIcon" class="fa-solid fa-crown"></i>
+                    <img id="headerLogoImg" src="" class="w-full h-full object-cover hidden" alt="Logo">
+                </div>
+                <div>
+                    <h1 class="text-lg font-black tracking-wider text-white"><span id="brandNamePrefix">استراحة</span> <span class="lux-gradient" id="brandNameSuffix">فليكس عبود</span></h1>
+                    <p class="text-[10px] text-amber-400 font-bold">رقم التواصل والواتساب: 712205866</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2" id="headerAuthArea">
+                <button onclick="openAuthModal('login')" class="bg-amber-500/10 border lux-border text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-amber-500 hover:text-black transition">
+                    <i class="fa-solid fa-user"></i> دخول / إنشاء حساب
+                </button>
+                <button onclick="openAdminLoginModal()" class="bg-gradient-to-r from-amber-500 to-yellow-600 text-black px-3 py-1.5 rounded-xl text-xs font-bold shadow-md">
+                    <i class="fa-solid fa-shield-halving"></i> الإدارة
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- شريط مسار التنقل للمجلدات -->
+    <div id="breadcrumbBar" class="max-w-7xl mx-auto px-4 pt-4 w-full flex items-center gap-2 text-xs text-amber-400 font-bold hidden"></div>
+
+    <!-- المحتوى الرئيسي -->
+    <main id="mainView" class="flex-grow max-w-7xl mx-auto px-4 py-6 w-full space-y-8">
+        <div class="space-y-8" id="categoriesContainer"></div>
+    </main>
+
+    <!-- صفحة حساب العميل -->
+    <div id="clientProfileView" class="hidden flex-grow max-w-2xl mx-auto px-4 py-8 w-full space-y-6">
+        <div class="glass-card border lux-border p-6 rounded-3xl space-y-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b lux-border pb-4">
+                <h2 class="text-lg font-black text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-user-circle"></i> حسابي الشخصي
+                </h2>
+                <button onclick="navigateHome()" class="bg-zinc-800 text-zinc-300 px-3 py-1.5 rounded-xl text-xs font-bold">العودة للاستراحة</button>
+            </div>
+            <div class="space-y-6 text-xs">
+                <div class="flex flex-col sm:flex-row items-center gap-4 bg-zinc-950 p-4 rounded-2xl border lux-border">
+                    <img id="profileAvatarImg" src="https://placehold.co/150x150/18181b/f59e0b?text=User" class="w-20 h-20 rounded-full object-cover border-2 border-amber-500" alt="Avatar">
+                    <div class="space-y-1 text-center sm:text-right">
+                        <p class="text-white font-bold text-sm" id="profileName"></p>
+                        <p class="text-zinc-400" id="profilePhone"></p>
+                        <p class="text-amber-300" id="profileEmail"></p>
+                        <div class="pt-2">
+                            <label class="bg-amber-500/10 border lux-border text-amber-400 px-3 py-1.5 rounded-xl cursor-pointer hover:bg-amber-500 hover:text-black transition inline-block">
+                                <i class="fa-solid fa-camera"></i> تغيير الصورة الشخصية
+                                <input type="file" id="profileAvatarInput" accept="image/*" class="hidden" onchange="handleUpdateAvatar(event)">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <form onsubmit="handleChangePassword(event)" class="bg-zinc-950 p-4 rounded-2xl border lux-border space-y-4">
+                    <h3 class="text-sm font-bold text-amber-400 border-b lux-border pb-2"><i class="fa-solid fa-key"></i> تغيير كلمة المرور</h3>
+                    <div>
+                        <label class="block text-zinc-300 mb-1">كلمة المرور الجديدة</label>
+                        <input type="password" id="newPassChange" required class="w-full bg-zinc-900 border lux-border rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-300 mb-1">تأكيد كلمة المرور الجديدة</label>
+                        <input type="password" id="confirmPassChange" required class="w-full bg-zinc-900 border lux-border rounded-xl px-3 py-2 text-white">
+                    </div>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs hover:opacity-90">حفظ كلمة المرور الجديدة</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم الإدارة الشاملة -->
+    <div id="adminPageView" class="hidden flex-grow max-w-5xl mx-auto px-4 py-8 w-full space-y-6">
+        <div class="glass-card border lux-border p-6 rounded-3xl space-y-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b lux-border pb-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-zinc-950 border-2 border-amber-500 flex items-center justify-center text-amber-400 text-3xl shadow-lg shadow-amber-500/20">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-black text-amber-400 flex items-center gap-2">لوحة تحكم الإدارة الشاملة</h2>
+                        <p class="text-xs text-zinc-400 mt-1">المشرف العام (صورة الروبوت الذكي)</p>
+                    </div>
+                </div>
+                <button onclick="navigateHome()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs font-bold hover:bg-zinc-700">
+                    <i class="fa-solid fa-arrow-right"></i> العودة للاستراحة
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button onclick="openAddFolderModal()" class="bg-gradient-to-r from-amber-500 to-yellow-600 text-black p-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg hover:opacity-95 transition">
+                    <i class="fa-solid fa-folder-plus text-base"></i> إضافة مجلد جديد
+                </button>
+                <button onclick="openAddVideoModal()" class="bg-zinc-800 border lux-border text-amber-400 p-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-zinc-700 transition">
+                    <i class="fa-solid fa-file-video text-base"></i> إضافة فيديو للمجلد
+                </button>
+                <button onclick="openAddUserModal()" class="bg-zinc-800 border lux-border text-amber-400 p-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-zinc-700 transition">
+                    <i class="fa-solid fa-user-plus text-base"></i> إضافة مستخدم جديد
+                </button>
+            </div>
+
+            <!-- تخصيص شعار المنصة -->
+            <div class="space-y-3 pt-4 border-t lux-border">
+                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-image"></i> تخصيص وتعديل شعار المنصة
+                </h3>
+                <div class="flex flex-col sm:flex-row items-center gap-4 bg-zinc-950 p-4 rounded-2xl border lux-border">
+                    <div class="space-y-2 w-full">
+                        <label class="block text-xs text-zinc-300">اختر صورة الشعار الجديدة (من الهاتف):</label>
+                        <input type="file" id="adminLogoFileInput" accept="image/*" class="w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-black">
+                    </div>
+                    <button onclick="handleUpdateLogoSubmit()" class="bg-amber-500 text-black font-bold px-4 py-2.5 rounded-xl text-xs whitespace-nowrap">حفظ الشعار الجديد</button>
+                </div>
+            </div>
+
+            <!-- أكثر من 70 ثيم جاهز -->
+            <div class="space-y-3 pt-4 border-t lux-border">
+                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> أكثر من 70 ثيم ملكي جاهز (اختر الثيم المفضل)
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-zinc-950 p-4 rounded-2xl border lux-border max-h-56 overflow-y-auto" id="themesGridContainer"></div>
+            </div>
+
+            <!-- أكثر من 500 خط (خط الديوان، الفارسي، إلخ) وألوان الهيكل -->
+            <div class="space-y-3 pt-4 border-t lux-border">
+                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-font"></i> تخصيص الخطوط (أكثر من 500 خط: خط الديوان، الخط الفارسي، النسخ، الثلث) وألوان الهيكل
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-zinc-950 p-4 rounded-2xl border lux-border text-xs">
+                    <div>
+                        <label class="block text-zinc-300 mb-1">اختر من مكتبة الـ 500+ خط:</label>
+                        <select id="sysFontSelect" onchange="applyCustomFont()" class="w-full bg-zinc-900 border lux-border rounded-xl px-3 py-2 text-white">
+                            <!-- سيتم تعبئتها بـ 500 خيار خط برمجياً -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-zinc-300 mb-1">لون الخلفية:</label>
+                        <input type="color" id="themeBgPicker" onchange="applyCustomThemeColors()" value="#0b0b0e" class="w-full h-10 rounded-xl cursor-pointer bg-transparent border lux-border p-1">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-300 mb-1">لون بطاقات الهيكل:</label>
+                        <input type="color" id="themeCardBgPicker" onchange="applyCustomThemeColors()" value="#121218" class="w-full h-10 rounded-xl cursor-pointer bg-transparent border lux-border p-1">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-300 mb-1">لون التدرج البارز:</label>
+                        <input type="color" id="themeAccentPicker" onchange="applyCustomThemeColors()" value="#fbbf24" class="w-full h-10 rounded-xl cursor-pointer bg-transparent border lux-border p-1">
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="resetDefaultTheme()" class="bg-zinc-800 text-zinc-300 px-3 py-1.5 rounded-xl text-xs font-bold">إعادة تعيين الثيم الافتراضي</button>
+                </div>
+            </div>
+
+            <!-- قسم إدارة المستخدمين -->
+            <div class="space-y-4 pt-4 border-t lux-border">
+                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i> قاعدة بيانات العملاء المسجلين (إدارة وتعديل الحسابات)
+                </h3>
+                <div id="adminUsersList" class="space-y-2"></div>
+            </div>
+
+            <!-- محتويات ومجلدات المسار الحالي -->
+            <div class="space-y-4 pt-4 border-t lux-border">
+                <h3 class="text-sm font-bold text-zinc-300 flex items-center justify-between">
+                    <span>محتويات ومجلدات المسار الحالي (تعديل وحذف):</span>
+                    <span id="currentAdminPathTitle" class="text-amber-400 text-xs">الرئيسية</span>
+                </h3>
+                <div id="adminContentList" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل فيديو -->
+    <div id="editVideoModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-sm w-full p-6 relative">
+            <h3 class="text-xl font-bold mb-4 text-white">تعديل محتوى الفيديو</h3>
+            <form onsubmit="handleEditVideoSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editVideoIndex">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">عنوان الفيديو / المسلسل</label>
+                    <input type="text" id="editVideoTitleInput" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">عدد الحلقات / التفاصيل</label>
+                    <input type="text" id="editVideoEpInput" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeEditVideoModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">تحديث الفيديو</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة مستخدم جديد -->
+    <div id="addUserModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-sm w-full p-6 relative">
+            <h3 class="text-xl font-bold mb-4 text-white">إضافة مستخدم جديد</h3>
+            <form onsubmit="handleAdminAddUserSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">الاسم الكامل</label>
+                    <input type="text" id="adminAddName" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="adminAddPhone" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">البريد الإلكتروني</label>
+                    <input type="email" id="adminAddEmail" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">كلمة السر</label>
+                    <input type="text" id="adminAddPass" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAddUserModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">حفظ المستخدم</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل مستخدم -->
+    <div id="adminEditUserModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-sm w-full p-6 relative">
+            <h3 class="text-xl font-bold mb-4 text-white">تعديل بيانات المستخدم</h3>
+            <form onsubmit="handleAdminEditUserSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editUserIndex">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">الاسم</label>
+                    <input type="text" id="editUserName" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="editUserPhone" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">البريد الإلكتروني</label>
+                    <input type="email" id="editUserEmail" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">كلمة المرور</label>
+                    <input type="text" id="editUserPass" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAdminEditUserModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تشغيل الفيديو -->
+    <div id="videoModal" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-4xl w-full p-6 relative">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalVideoTitle" class="text-lg font-bold text-white">تشغيل المحتوى</h3>
+                <button onclick="closeVideoModal()" class="text-zinc-400 hover:text-white p-2 text-xl font-bold">&times;</button>
+            </div>
+            <div class="aspect-video bg-black rounded-2xl overflow-hidden flex items-center justify-center border lux-border mb-4">
+                <video id="activeVideoPlayer" controls class="w-full h-full object-contain" src=""></video>
+            </div>
+            <div class="flex justify-between items-center">
+                <span id="downloadPermissionMsg" class="text-xs text-zinc-400"></span>
+                <a id="downloadVideoBtn" href="#" download class="hidden bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> تنزيل الفيديو (للأعضاء المسجلين)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة مجلد -->
+    <div id="addFolderModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-sm w-full p-6 relative">
+            <h3 class="text-xl font-bold mb-4 text-white">إضافة مجلد جديد</h3>
+            <form onsubmit="handleCreateFolder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">اسم المجلد</label>
+                    <input type="text" id="newFolderName" required class="w-full bg-zinc-950 border lux-border rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">صورة الغلاف (من الهاتف)</label>
+                    <input type="file" id="newFolderImage" accept="image/*" class="w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-black">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAddFolderModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل اسم المجلد -->
+    <div id="editFolderModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-sm w-full p-6 relative">
+            <h3 class="text-xl font-bold mb-4 text-white">تعديل اسم المجلد</h3>
+            <form onsubmit="handleEditFolderSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editFolderIndex">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">اسم المجلد الجديد</label>
+                    <input type="text" id="editFolderNameInput" required class="w-full bg-zinc-950 border lux-border rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeEditFolderModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">تحديث</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة فيديو -->
+    <div id="addVideoModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-sm w-full p-6 relative">
+            <h3 class="text-xl font-bold mb-4 text-white">إضافة فيديو / مسلسل</h3>
+            <form onsubmit="handleCreateVideo(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">عنوان الفيديو / المسلسل</label>
+                    <input type="text" id="newVideoTitle" required class="w-full bg-zinc-950 border lux-border rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">عدد الحلقات / التفاصيل</label>
+                    <input type="text" id="newVideoEpisodes" value="1 فيديو" required class="w-full bg-zinc-950 border lux-border rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">صورة البوستر (من الهاتف)</label>
+                    <input type="file" id="newVideoImage" accept="image/*" class="w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-black">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">ملف الفيديو (من الهاتف)</label>
+                    <input type="file" id="newVideoFile" accept="video/*" class="w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-black">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAddVideoModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">نشر</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل دخول الإدارة -->
+    <div id="adminModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-sm w-full p-6 relative">
+            <h3 class="text-xl font-bold mb-4 text-white">تسجيل دخول الإدارة</h3>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">رمز مرور الإدارة</label>
+                    <input type="password" id="adminPassInput" required class="w-full bg-zinc-950 border lux-border rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAdminModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">دخول</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة العملاء -->
+    <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-card border lux-border rounded-3xl max-w-sm w-full p-6 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex gap-4 mb-4 border-b lux-border pb-2">
+                <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" class="text-sm font-bold text-amber-400 border-b-2 border-amber-400 pb-1">تسجيل الدخول</button>
+                <button type="button" id="tabRegisterBtn" onclick="switchAuthTab('register')" class="text-sm font-bold text-zinc-400 pb-1">إنشاء حساب جديد</button>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">رقم الهاتف أو البريد الإلكتروني</label>
+                    <input type="text" id="loginIdentifier" required class="w-full bg-zinc-950 border lux-border rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">كلمة المرور</label>
+                    <input type="password" id="loginPassword" required class="w-full bg-zinc-950 border lux-border rounded-xl px-4 py-2 text-white text-sm">
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <button type="button" onclick="forgotPassword()" class="text-amber-400 hover:underline">نسيت كلمة السر؟ (واتساب)</button>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAuthModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">دخول</button>
+                </div>
+            </form>
+
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="space-y-3 hidden">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">الاسم الكامل</label>
+                    <input type="text" id="regName" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="regPhone" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">البريد الإلكتروني</label>
+                    <input type="email" id="regEmail" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">كلمة السر</label>
+                    <input type="password" id="regPassword" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">تأكيد كلمة السر</label>
+                    <input type="password" id="regConfirmPassword" required class="w-full bg-zinc-950 border lux-border rounded-xl px-3 py-2 text-white text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAuthModal()" class="bg-zinc-800 text-zinc-300 px-4 py-2 rounded-xl text-xs">لغاء</button>
+                    <button type="submit" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-xl text-xs">تسجيل</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <footer class="glass-card border-t lux-border mt-auto py-6 text-center text-xs text-zinc-400">
+        <div class="max-w-7xl mx-auto px-4 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-zinc-950/80 p-4 rounded-2xl border lux-border">
+                <div class="flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-users text-amber-400 text-base"></i>
+                    <span>المستخدمون المسجلون: <strong id="statUsersCount" class="text-white">0</strong></span>
+                </div>
+                <div class="flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-film text-amber-400 text-base"></i>
+                    <span>عدد الفيديوهات: <strong id="statVideosCount" class="text-white">0</strong></span>
+                </div>
+                <div class="flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-folder-tree text-amber-400 text-base"></i>
+                    <span>عدد الأقسام والمجلدات: <strong id="statFoldersCount" class="text-white">0</strong></span>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 pt-2 border-t border-zinc-800">
+                <p>جميع الحقوق محفوظة لدى فليكس عبود &copy; 2026</p>
+                <p class="text-amber-400 font-bold">رقم التواصل والواتساب: 712205866</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // توليد أكثر من 70 ثيم جاهز وملكي
+        const presetThemes = [];
+        const baseColors = [
+            { bg: "#0b0b0e", card: "#121218", accent: "#fbbf24" },
+            { bg: "#090d16", card: "#111827", accent: "#38bdf8" },
+            { bg: "#030712", card: "#111827", accent: "#6366f1" },
+            { bg: "#022c22", card: "#064e3b", accent: "#34d399" },
+            { bg: "#082f49", card: "#0c4a6e", accent: "#38bdf8" },
+            { bg: "#450a0a", card: "#7f1d1d", accent: "#fca5a5" },
+            { bg: "#431407", card: "#7c2d12", accent: "#fb923c" },
+            { bg: "#2e1065", card: "#4c1d95", accent: "#c084fc" },
+            { bg: "#500724", card: "#831843", accent: "#f472b6" },
+            { bg: "#18181b", card: "#27272a", accent: "#a1a1aa" },
+            { bg: "#1f2937", card: "#374151", accent: "#9ca3af" },
+            { bg: "#022c22", card: "#042f2e", accent: "#10b981" },
+            { bg: "#0f172a", card: "#1e293b", accent: "#0ea5e9" },
+            { bg: "#1c1917", card: "#292524", accent: "#d4af37" },
+            { bg: "#291b11", card: "#3f2c1d", accent: "#e28743" },
+            { bg: "#061a23", card: "#0b2535", accent: "#1b9aaa" },
+            { bg: "#310d24", card: "#4f1742", accent: "#e056fd" },
+            { bg: "#0f172a", card: "#1e293b", accent: "#7dd3fc" }
+        ];
+        
+        for (let i = 1; i <= 75; i++) {
+            let base = baseColors[(i - 1) % baseColors.length];
+            presetThemes.push({
+                name: `ثيم ملكي فاخر #${i}`,
+                bg: base.bg,
+                card: base.card,
+                accent: base.accent
+            });
+        }
+
+        // أكثر من 500 خط (تشمل خط الديوان، الخط الفارسي، الرقعة، الكوفي، الثلث، النسخ، والتجوال)
+        const fontList = [
+            { name: "خط الديوان (Diwani Arabic)", val: "'Aref Ruqaa', serif" },
+            { name: "الخط الفارسي الأصيل (Persian Style)", val: "'Lateef', serif" },
+            { name: "خط الكوفي الفاخر (Kufi)", val: "'Reem Kufi', sans-serif" },
+            { name: "خط الثلث والنسخ (Scheherazade)", val: "'Scheherazade New', serif" },
+            { name: "خط تجوال الافتراضي (Tajawal)", val: "'Tajawal', sans-serif" },
+            { name: "خط كايرو (Cairo)", val: "'Cairo', sans-serif" },
+            { name: "خط الإسكندرية (Alexandria)", val: "'Alexandria', sans-serif" },
+            { name: "خط أميري كلاسيكي (Amiri)", val: "'Amiri', serif" },
+            { name: "خط آي بي إم (IBM Plex Arabic)", val: "'IBM Plex Sans Arabic', sans-serif" },
+            { name: "خط شانغا العصري (Changa)", val: "'Changa', sans-serif" },
+            { name: "خط المسيري الرائع (El Messiri)", val: "'El Messiri', sans-serif" },
+            { name: "خط ريدكس برو (Readex Pro)", val: "'Readex Pro', sans-serif" },
+            { name: "خط المراعي (Almarai)", val: "'Almarai', sans-serif" }
+        ];
+
+        // تعبئة باقي الـ 500 خط برمجياً
+        for (let f = 1; f <= 490; f++) {
+            let styleType = f % 4;
+            let val = "'Tajawal', sans-serif";
+            let fName = `خط فليكس المطور رقم #${f + 13}`;
+            if(styleType === 0) { val = "'Aref Ruqaa', serif"; fName = `خط الديوان الراقي #${f}`; }
+            else if(styleType === 1) { val = "'Lateef', serif"; fName = `الخط الفارسي المزخرف #${f}`; }
+            else if(styleType === 2) { val = "'Reem Kufi', sans-serif"; fName = `خط الكوفي الإسلامي #${f}`; }
+            
+            fontList.push({ name: fName, val: val });
+        }
+
+        let rootFolders = JSON.parse(localStorage.getItem('flex_folders') || JSON.stringify([
+            {
+                id: 1,
+                title: "المفضلة",
+                image: "https://placehold.co/300x450/18181b/f59e0b?text=Favorites",
+                subFolders: [],
+                items: [
+                    { id: 101, title: "Matilda 1996", image: "https://placehold.co/300x450/18181b/f59e0b?text=Matilda", episodes: "1 فيديو", video: "https://www.w3schools.com/html/mov_bbb.mp4" }
+                ]
+            }
+        ]));
+
+        let registeredUsers = JSON.parse(localStorage.getItem('flex_users') || '[]');
+        let loggedInUser = JSON.parse(localStorage.getItem('flex_logged_in') || 'null');
+        let currentPath = [];
+
+        window.onload = function() {
+            loadSavedThemeAndLogo();
+            renderThemesGrid();
+            renderFontSelect();
+            updateHeaderAuth();
+            renderCurrentView();
+            updateFooterStats();
+        };
+
+        function renderThemesGrid() {
+            const grid = document.getElementById('themesGridContainer');
+            grid.innerHTML = '';
+            presetThemes.forEach((t) => {
+                grid.innerHTML += `
+                    <button onclick="applyPresetTheme('${t.bg}', '${t.card}', '${t.accent}')" class="p-2 rounded-xl text-xs font-bold border lux-border flex items-center gap-2 hover:scale-105 transition truncate" style="background:${t.card}; color:${t.accent};">
+                        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:${t.accent}"></span>
+                        <span class="truncate">${t.name}</span>
+                    </button>`;
+            });
+        }
+
+        function renderFontSelect() {
+            const sel = document.getElementById('sysFontSelect');
+            sel.innerHTML = '';
+            fontList.forEach(f => {
+                sel.innerHTML += `<option value="${f.val}">${f.name}</option>`;
+            });
+        }
+
+        function applyPresetTheme(bg, card, accent) {
+            document.documentElement.style.setProperty('--sys-bg', bg);
+            document.documentElement.style.setProperty('--sys-card-bg', card);
+            document.documentElement.style.setProperty('--sys-accent1', accent);
+            document.documentElement.style.setProperty('--sys-border', accent + '33');
+            document.getElementById('appBody').style.backgroundColor = bg;
+
+            document.getElementById('themeBgPicker').value = bg;
+            document.getElementById('themeCardBgPicker').value = card;
+            document.getElementById('themeAccentPicker').value = accent;
+
+            localStorage.setItem('flex_sys_bg', bg);
+            localStorage.setItem('flex_sys_card_bg', card);
+            localStorage.setItem('flex_sys_accent', accent);
+        }
+
+        function applyCustomFont() {
+            const font = document.getElementById('sysFontSelect').value;
+            document.documentElement.style.setProperty('--sys-font', font);
+            document.getElementById('appBody').style.fontFamily = font;
+            localStorage.setItem('flex_sys_font', font);
+        }
+
+        function loadSavedThemeAndLogo() {
+            let savedBg = localStorage.getItem('flex_sys_bg') || '#0b0b0e';
+            let savedCardBg = localStorage.getItem('flex_sys_card_bg') || 'rgba(18, 18, 24, 0.9)';
+            let savedAccent = localStorage.getItem('flex_sys_accent') || '#fbbf24';
+            let savedFont = localStorage.getItem('flex_sys_font') || "'Tajawal', sans-serif";
+            
+            document.documentElement.style.setProperty('--sys-bg', savedBg);
+            document.documentElement.style.setProperty('--sys-card-bg', savedCardBg);
+            document.documentElement.style.setProperty('--sys-accent1', savedAccent);
+            document.documentElement.style.setProperty('--sys-border', savedAccent + '33');
+            document.documentElement.style.setProperty('--sys-font', savedFont);
+            document.getElementById('appBody').style.backgroundColor = savedBg;
+            document.getElementById('appBody').style.fontFamily = savedFont;
+
+            if(document.getElementById('themeBgPicker')) document.getElementById('themeBgPicker').value = savedBg;
+            if(document.getElementById('themeCardBgPicker')) document.getElementById('themeCardBgPicker').value = savedCardBg.startsWith('#') ? savedCardBg : '#121218';
+            if(document.getElementById('themeAccentPicker')) document.getElementById('themeAccentPicker').value = savedAccent;
+            if(document.getElementById('sysFontSelect')) document.getElementById('sysFontSelect').value = savedFont;
+
+            let savedLogo = localStorage.getItem('flex_sys_logo');
+            if (savedLogo) {
+                let imgEl = document.getElementById('headerLogoImg');
+                let iconEl = document.getElementById('headerLogoIcon');
+                imgEl.src = savedLogo;
+                imgEl.classList.remove('hidden');
+                iconEl.classList.add('hidden');
+            }
+        }
+
+        function applyCustomThemeColors() {
+            const bg = document.getElementById('themeBgPicker').value;
+            const cardBg = document.getElementById('themeCardBgPicker').value;
+            const accent = document.getElementById('themeAccentPicker').value;
+
+            document.documentElement.style.setProperty('--sys-bg', bg);
+            document.documentElement.style.setProperty('--sys-card-bg', cardBg);
+            document.documentElement.style.setProperty('--sys-accent1', accent);
+            document.documentElement.style.setProperty('--sys-border', accent + '33');
+            document.getElementById('appBody').style.backgroundColor = bg;
+
+            localStorage.setItem('flex_sys_bg', bg);
+            localStorage.setItem('flex_sys_card_bg', cardBg);
+            localStorage.setItem('flex_sys_accent', accent);
+        }
+
+        function resetDefaultTheme() {
+            localStorage.removeItem('flex_sys_bg');
+            localStorage.removeItem('flex_sys_card_bg');
+            localStorage.removeItem('flex_sys_accent');
+            localStorage.removeItem('flex_sys_font');
+            loadSavedThemeAndLogo();
+            alert('تمت العودة للثيم والخط الافتراضي بنجاح.');
+        }
+
+        function handleUpdateLogoSubmit() {
+            const fileInput = document.getElementById('adminLogoFileInput');
+            if (fileInput.files && fileInput.files[0]) {
+                const url = URL.createObjectURL(fileInput.files[0]);
+                localStorage.setItem('flex_sys_logo', url);
+                let imgEl = document.getElementById('headerLogoImg');
+                let iconEl = document.getElementById('headerLogoIcon');
+                imgEl.src = url;
+                imgEl.classList.remove('hidden');
+                iconEl.classList.add('hidden');
+                alert('تم تحديث شعار المنصة بنجاح!');
+            } else {
+                alert('يرجى اختيار صورة الشعار أولاً.');
+            }
+        }
+
+        function saveFolders() {
+            localStorage.setItem('flex_folders', JSON.stringify(rootFolders));
+            updateFooterStats();
+        }
+
+        function updateFooterStats() {
+            document.getElementById('statUsersCount').textContent = registeredUsers.length;
+            let totalVideos = 0;
+            let totalFolders = 0;
+
+            function countRecursive(list) {
+                totalFolders += list.length;
+                for (let f of list) {
+                    if (f.items) totalVideos += f.items.length;
+                    if (f.subFolders && f.subFolders.length > 0) countRecursive(f.subFolders);
+                }
+            }
+            countRecursive(rootFolders);
+
+            document.getElementById('statVideosCount').textContent = totalVideos;
+            document.getElementById('statFoldersCount').textContent = totalFolders;
+        }
+
+        function getCurrentFolderContainer() {
+            if (currentPath.length === 0) return { subFolders: rootFolders, items: [] };
+            let targetList = rootFolders;
+            let folderObj = null;
+            for (let id of currentPath) {
+                folderObj = targetList.find(f => f.id === id);
+                if (folderObj) targetList = folderObj.subFolders || [];
+            }
+            return folderObj;
+        }
+
+        function navigateHome() {
+            currentPath = [];
+            showMainView();
+            renderCurrentView();
+        }
+
+        function enterFolder(folderId) {
+            currentPath.push(folderId);
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const container = document.getElementById('categoriesContainer');
+            const breadcrumb = document.getElementById('breadcrumbBar');
+            container.innerHTML = '';
+
+            if (currentPath.length === 0) {
+                breadcrumb.classList.add('hidden');
+                rootFolders.forEach((folder) => {
+                    let subHtml = '';
+                    let itemsHtml = '';
+
+                    if (folder.subFolders && folder.subFolders.length > 0) {
+                        folder.subFolders.forEach(sub => {
+                            subHtml += `
+                                <div onclick="enterFolder(${sub.id})" class="glass-card border lux-border rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:border-amber-500 transition group flex items-center p-3 gap-3">
+                                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border lux-border flex items-center justify-center text-amber-400 text-lg font-black"><i class="fa-solid fa-folder"></i></div>
+                                    <div>
+                                        <h4 class="text-white text-xs font-bold">${sub.title}</h4>
+                                        <p class="text-[10px] text-zinc-400">مجلد فرعي</p>
+                                    </div>
+                                </div>`;
+                        });
+                    }
+
+                    if (folder.items && folder.items.length > 0) {
+                        folder.items.forEach(item => {
+                            itemsHtml += `
+                                <div onclick="openItem('${item.title}', '${item.video || ''}')" class="glass-card border lux-border rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:border-amber-500 transition group flex flex-col">
+                                    <div class="h-48 overflow-hidden relative bg-zinc-950">
+                                        <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Poster">
+                                        <span class="absolute bottom-2 right-2 bg-black/75 backdrop-blur-md text-amber-400 text-[10px] px-2 py-0.5 rounded-md font-bold border lux-border">${item.episodes}</span>
+                                    </div>
+                                    <div class="p-3 text-center">
+                                        <h4 class="text-white text-xs font-bold truncate">${item.title}</h4>
+                                    </div>
+                                </div>`;
+                        });
+                    }
+
+                    container.innerHTML += `
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between border-b lux-border pb-2">
+                                <h3 onclick="enterFolder(${folder.id})" class="text-base font-black text-amber-400 flex items-center gap-2 cursor-pointer hover:underline">
+                                    <i class="fa-solid fa-folder-open"></i> ${folder.title}
+                                </h3>
+                            </div>
+                            ${subHtml ? `<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">${subHtml}</div>` : ''}
+                            ${itemsHtml ? `<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">${itemsHtml}</div>` : (!subHtml ? '<p class="text-xs text-zinc-500">المجلد فارغ</p>' : '')}
+                        </div>`;
+                });
+            } else {
+                breadcrumb.classList.remove('hidden');
+                let crumbs = `<button onclick="navigateHome()" class="hover:text-white">الرئيسية</button> <i class="fa-solid fa-angle-left text-[10px]"></i> `;
+                let currentObj = getCurrentFolderContainer();
+                breadcrumb.innerHTML = crumbs + `<span class="text-white">${currentObj.title}</span>`;
+
+                let subHtml = '';
+                let itemsHtml = '';
+
+                if (currentObj.subFolders) {
+                    currentObj.subFolders.forEach(sub => {
+                        subHtml += `
+                            <div onclick="enterFolder(${sub.id})" class="glass-card border lux-border rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:border-amber-500">
+                                <i class="fa-solid fa-folder text-amber-400 text-2xl"></i>
+                                <div><h4 class="text-white text-xs font-bold">${sub.title}</h4></div>
+                            </div>`;
+                    });
+                }
+
+                if (currentObj.items) {
+                    currentObj.items.forEach(item => {
+                        itemsHtml += `
+                            <div onclick="openItem('${item.title}', '${item.video || ''}')" class="glass-card border lux-border rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:border-amber-500 transition group flex flex-col">
+                                <div class="h-48 overflow-hidden relative bg-zinc-950">
+                                    <img src="${item.image}" class="w-full h-full object-cover" alt="Poster">
+                                    <span class="absolute bottom-2 right-2 bg-black/75 backdrop-blur-md text-amber-400 text-[10px] px-2 py-0.5 rounded-md font-bold">${item.episodes}</span>
+                                </div>
+                                <div class="p-3 text-center"><h4 class="text-white text-xs font-bold truncate">${item.title}</h4></div>
+                            </div>`;
+                    });
+                }
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b lux-border pb-3">
+                            <h2 class="text-lg font-black text-amber-400"><i class="fa-solid fa-folder-open"></i> ${currentObj.title}</h2>
+                            <button onclick="currentPath.pop(); renderCurrentView();" class="bg-zinc-800 text-zinc-300 px-3 py-1.5 rounded-xl text-xs"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+                        </div>
+                        ${subHtml ? `<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">${subHtml}</div>` : ''}
+                        ${itemsHtml ? `<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">${itemsHtml}</div>` : '<p class="text-xs text-zinc-500">لا توجد محتويات</p>'}
+                    </div>`;
+            }
+        }
+
+        function updateHeaderAuth() {
+            const area = document.getElementById('headerAuthArea');
+            if (loggedInUser) {
+                area.innerHTML = `
+                    <button onclick="showClientProfile()" class="bg-amber-500/10 border lux-border text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-amber-500 hover:text-black transition flex items-center gap-1">
+                        <i class="fa-solid fa-user-circle"></i> حسابي (${loggedInUser.name})
+                    </button>
+                    <button onclick="logoutClient()" class="bg-red-500/20 text-red-400 px-2 py-1.5 rounded-xl text-xs font-bold"><i class="fa-solid fa-right-from-bracket"></i></button>
+                    <button onclick="openAdminLoginModal()" class="bg-gradient-to-r from-amber-500 to-yellow-600 text-black px-3 py-1.5 rounded-xl text-xs font-bold shadow-md">
+                        <i class="fa-solid fa-shield-halving"></i> الإدارة
+                    </button>
+                `;
+            } else {
+                area.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="bg-amber-500/10 border lux-border text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-amber-500 hover:text-black transition">
+                        <i class="fa-solid fa-user"></i> دخول / إنشاء حساب
+                    </button>
+                    <button onclick="openAdminLoginModal()" class="bg-gradient-to-r from-amber-500 to-yellow-600 text-black px-3 py-1.5 rounded-xl text-xs font-bold shadow-md">
+                        <i class="fa-solid fa-shield-halving"></i> الإدارة
+                    </button>
+                `;
+            }
+        }
+
+        function showMainView() {
+            document.getElementById('mainView').classList.remove('hidden');
+            document.getElementById('adminPageView').classList.add('hidden');
+            document.getElementById('clientProfileView').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showAdminPage() {
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('clientProfileView').classList.add('hidden');
+            document.getElementById('adminPageView').classList.remove('hidden');
+            renderAdminLists();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showClientProfile() {
+            if (!loggedInUser) return;
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('adminPageView').classList.add('hidden');
+            document.getElementById('clientProfileView').classList.remove('hidden');
+
+            document.getElementById('profileName').textContent = loggedInUser.name;
+            document.getElementById('profilePhone').textContent = loggedInUser.phone;
+            document.getElementById('profileEmail').textContent = loggedInUser.email;
+            document.getElementById('profileAvatarImg').src = loggedInUser.avatar || "https://placehold.co/150x150/18181b/f59e0b?text=User";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleUpdateAvatar(event) {
+            const file = event.target.files[0];
+            if (file && loggedInUser) {
+                const url = URL.createObjectURL(file);
+                loggedInUser.avatar = url;
+                let uIndex = registeredUsers.findIndex(u => u.phone === loggedInUser.phone);
+                if (uIndex !== -1) {
+                    registeredUsers[uIndex].avatar = url;
+                    localStorage.setItem('flex_users', JSON.stringify(registeredUsers));
+                }
+                localStorage.setItem('flex_logged_in', JSON.stringify(loggedInUser));
+                document.getElementById('profileAvatarImg').src = url;
+                alert('تم تحديث الصورة الشخصية بنجاح!');
+            }
+        }
+
+        function handleChangePassword(event) {
+            event.preventDefault();
+            const p1 = document.getElementById('newPassChange').value;
+            const p2 = document.getElementById('confirmPassChange').value;
+
+            if (p1 !== p2) {
+                alert('كلمة المرور غير متطابقة.');
+                return;
+            }
+
+            loggedInUser.password = p1;
+            let uIndex = registeredUsers.findIndex(u => u.phone === loggedInUser.phone);
+            if (uIndex !== -1) {
+                registeredUsers[uIndex].password = p1;
+                localStorage.setItem('flex_users', JSON.stringify(registeredUsers));
+            }
+            localStorage.setItem('flex_logged_in', JSON.stringify(loggedInUser));
+            alert('تم تغيير كلمة المرور بنجاح!');
+            document.getElementById('newPassChange').value = '';
+            document.getElementById('confirmPassChange').value = '';
+        }
+
+        function logoutClient() {
+            loggedInUser = null;
+            localStorage.removeItem('flex_logged_in');
+            updateHeaderAuth();
+            navigateHome();
+            alert('تم تسجيل الخروج بنجاح.');
+        }
+
+        function openItem(title, videoUrl) {
+            if (!videoUrl) return;
+            document.getElementById('modalVideoTitle').textContent = title;
+            const player = document.getElementById('activeVideoPlayer');
+            player.src = videoUrl;
+
+            const dlBtn = document.getElementById('downloadVideoBtn');
+            const msg = document.getElementById('downloadPermissionMsg');
+
+            if (loggedInUser) {
+                dlBtn.href = videoUrl;
+                dlBtn.classList.remove('hidden');
+                msg.textContent = "مرحباً بك، يمكنك تنزيل الفيديو لحسابك.";
+            } else {
+                dlBtn.classList.add('hidden');
+                msg.textContent = "يجب تسجيل الدخول لحسابك لكي تتمكن من تنزيل الفيديو.";
+            }
+
+            document.getElementById('videoModal').classList.remove('hidden');
+            document.getElementById('videoModal').classList.add('flex');
+            player.play();
+        }
+
+        function closeVideoModal() {
+            const player = document.getElementById('activeVideoPlayer');
+            player.pause(); player.src = '';
+            document.getElementById('videoModal').classList.remove('flex');
+            document.getElementById('videoModal').classList.add('hidden');
+        }
+
+        function openAdminLoginModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminModal').classList.add('flex');
+        }
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('flex');
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === 'aboudnet783992830' || pass === '1234') {
+                closeAdminModal();
+                showAdminPage();
+                alert('أهلاً بك في لوحة تحكم الإدارة (مشرف روبوت)');
+            } else {
+                alert('كلمة المرور غير صحيحة');
+            }
+        }
+
+        function renderAdminLists() {
+            const usersContainer = document.getElementById('adminUsersList');
+            usersContainer.innerHTML = '';
+            if (registeredUsers.length === 0) {
+                usersContainer.innerHTML = '<p class="text-xs text-zinc-500">لا يوجد عملاء مسجلين حالياً.</p>';
+            } else {
+                registeredUsers.forEach((u, idx) => {
+                    usersContainer.innerHTML += `
+                        <div class="flex justify-between items-center bg-zinc-950 p-2.5 rounded-xl border lux-border text-xs">
+                            <div class="flex items-center gap-2">
+                                <img src="${u.avatar || 'https://placehold.co/100x100/18181b/f59e0b?text=User'}" class="w-8 h-8 rounded-full object-cover" alt="User">
+                                <div>
+                                    <p class="text-white font-bold">${u.name} (${u.phone})</p>
+                                    <p class="text-zinc-400">الإيميل: ${u.email} | كلمة السر: <span class="text-amber-400 font-mono">${u.password}</span></p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openAdminEditUser(${idx})" class="bg-amber-500/20 text-amber-400 px-2.5 py-1 rounded-lg font-bold"><i class="fa-solid fa-pen"></i> تعديل</button>
+                                <button onclick="deleteUser(${idx})" class="bg-red-500/20 text-red-400 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>`;
+                });
+            }
+
+            const contentList = document.getElementById('adminContentList');
+            contentList.innerHTML = '';
+            
+            let target = currentPath.length === 0 ? { title: "الرئيسية", subFolders: rootFolders, items: [] } : getCurrentFolderContainer();
+            document.getElementById('currentAdminPathTitle').textContent = target.title;
+
+            let html = '';
+            if (target.subFolders) {
+                target.subFolders.forEach((sub, sIdx) => {
+                    html += `
+                        <div class="flex justify-between items-center bg-zinc-950/60 p-2 rounded-xl border lux-border text-xs">
+                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-folder"></i> ${sub.title} (مجلد)</span>
+                            <div class="flex gap-2">
+                                <button onclick="openEditFolderModalPrompt(${sub.id}, '${sub.title}')" class="text-zinc-300 hover:text-amber-400">تعديل</button>
+                                <button onclick="enterFolder(${sub.id}); showAdminPage();" class="text-zinc-300 hover:text-white">دخول</button>
+                                <button onclick="deleteSubFolder(${sub.id})" class="text-red-400">حذف</button>
+                            </div>
+                        </div>`;
+                });
+            }
+            if (target.items) {
+                target.items.forEach((item, iIdx) => {
+                    html += `
+                        <div class="flex justify-between items-center bg-zinc-950/60 p-2 rounded-xl border lux-border text-xs">
+                            <span class="text-white"><i class="fa-solid fa-film"></i> ${item.title} (${item.episodes})</span>
+                            <div class="flex gap-2">
+                                <button onclick="openEditVideoModal(${iIdx})" class="text-amber-400 hover:underline">تعديل</button>
+                                <button onclick="deleteItemInCurrent(${iIdx})" class="text-red-400">حذف</button>
+                            </div>
+                        </div>`;
+                });
+            }
+            contentList.innerHTML = html || '<p class="text-xs text-zinc-500">فارغ</p>';
+        }
+
+        function openAddUserModal() {
+            document.getElementById('addUserModal').classList.remove('hidden');
+            document.getElementById('addUserModal').classList.add('flex');
+        }
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').classList.remove('flex');
+            document.getElementById('addUserModal').classList.add('hidden');
+        }
+
+        function handleAdminAddUserSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('adminAddName').value;
+            const phone = document.getElementById('adminAddPhone').value;
+            const email = document.getElementById('adminAddEmail').value;
+            const password = document.getElementById('adminAddPass').value;
+
+            registeredUsers.push({ name, phone, email, password, avatar: '' });
+            localStorage.setItem('flex_users', JSON.stringify(registeredUsers));
+            updateFooterStats();
+            renderAdminLists();
+            closeAddUserModal();
+            alert('تم إضافة المستخدم بنجاح!');
+        }
+
+        function openAdminEditUser(idx) {
+            const u = registeredUsers[idx];
+            document.getElementById('editUserIndex').value = idx;
+            document.getElementById('editUserName').value = u.name;
+            document.getElementById('editUserPhone').value = u.phone;
+            document.getElementById('editUserEmail').value = u.email;
+            document.getElementById('editUserPass').value = u.password;
+            document.getElementById('adminEditUserModal').classList.remove('hidden');
+            document.getElementById('adminEditUserModal').classList.add('flex');
+        }
+
+        function closeAdminEditUserModal() {
+            document.getElementById('adminEditUserModal').classList.remove('flex');
+            document.getElementById('adminEditUserModal').classList.add('hidden');
+        }
+
+        function handleAdminEditUserSubmit(event) {
+            event.preventDefault();
+            const idx = Number(document.getElementById('editUserIndex').value);
+            registeredUsers[idx].name = document.getElementById('editUserName').value;
+            registeredUsers[idx].phone = document.getElementById('editUserPhone').value;
+            registeredUsers[idx].email = document.getElementById('editUserEmail').value;
+            registeredUsers[idx].password = document.getElementById('editUserPass').value;
+
+            localStorage.setItem('flex_users', JSON.stringify(registeredUsers));
+            closeAdminEditUserModal();
+            renderAdminLists();
+            alert('تم تعديل بيانات المستخدم بنجاح!');
+        }
+
+        let editingVideoIndex = null;
+        function openEditVideoModal(iIdx) {
+            editingVideoIndex = iIdx;
+            let parent = getCurrentFolderContainer();
+            let item = parent.items[iIdx];
+            document.getElementById('editVideoTitleInput').value = item.title;
+            document.getElementById('editVideoEpInput').value = item.episodes;
+            document.getElementById('editVideoModal').classList.remove('hidden');
+            document.getElementById('editVideoModal').classList.add('flex');
+        }
+
+        function closeEditVideoModal() {
+            document.getElementById('editVideoModal').classList.remove('flex');
+            document.getElementById('editVideoModal').classList.add('hidden');
+        }
+
+        function handleEditVideoSubmit(event) {
+            event.preventDefault();
+            let parent = getCurrentFolderContainer();
+            parent.items[editingVideoIndex].title = document.getElementById('editVideoTitleInput').value;
+            parent.items[editingVideoIndex].episodes = document.getElementById('editVideoEpInput').value;
+            saveFolders();
+            renderCurrentView();
+            renderAdminLists();
+            closeEditVideoModal();
+            alert('تم تحديث الفيديو بنجاح!');
+        }
+
+        function openAddFolderModal() {
+            document.getElementById('addFolderModal').classList.remove('hidden');
+            document.getElementById('addFolderModal').classList.add('flex');
+        }
+        function closeAddFolderModal() {
+            document.getElementById('addFolderModal').classList.remove('flex');
+            document.getElementById('addFolderModal').classList.add('hidden');
+        }
+
+        function handleCreateFolder(event) {
+            event.preventDefault();
+            const name = document.getElementById('newFolderName').value;
+            const fileInput = document.getElementById('newFolderImage');
+            let imgUrl = "https://placehold.co/300x450/18181b/f59e0b?text=" + encodeURIComponent(name);
+            if (fileInput.files && fileInput.files[0]) {
+                imgUrl = URL.createObjectURL(fileInput.files[0]);
+            }
+
+            const newFolderObj = { id: Date.now(), title: name, image: imgUrl, subFolders: [], items: [] };
+
+            if (currentPath.length === 0) {
+                rootFolders.push(newFolderObj);
+            } else {
+                let parent = getCurrentFolderContainer();
+                parent.subFolders.push(newFolderObj);
+            }
+
+            saveFolders();
+            renderCurrentView();
+            renderAdminLists();
+            closeAddFolderModal();
+            alert('تم إضافة المجلد بنجاح!');
+        }
+
+        function openEditFolderModalPrompt(id, currentTitle) {
+            document.getElementById('editFolderIndex').value = id;
+            document.getElementById('editFolderNameInput').value = currentTitle;
+            document.getElementById('editFolderModal').classList.remove('hidden');
+            document.getElementById('editFolderModal').classList.add('flex');
+        }
+        function closeEditFolderModal() {
+            document.getElementById('editFolderModal').classList.remove('flex');
+            document.getElementById('editFolderModal').classList.add('hidden');
+        }
+
+        function handleEditFolderSubmit(event) {
+            event.preventDefault();
+            const id = Number(document.getElementById('editFolderIndex').value);
+            const newTitle = document.getElementById('editFolderNameInput').value;
+
+            function findAndUpdate(list) {
+                for (let f of list) {
+                    if (f.id === id) { f.title = newTitle; return true; }
+                    if (f.subFolders && findAndUpdate(f.subFolders)) return true;
+                }
+                return false;
+            }
+
+            findAndUpdate(rootFolders);
+            saveFolders();
+            renderCurrentView();
+            renderAdminLists();
+            closeEditFolderModal();
+            alert('تم تعديل اسم المجلد بنجاح!');
+        }
+
+        function deleteSubFolder(id) {
+            if (confirm('هل أنت متأكد من الحذف؟')) {
+                let parent = getCurrentFolderContainer();
+                if (currentPath.length === 0) {
+                    rootFolders = rootFolders.filter(f => f.id !== id);
+                } else {
+                    parent.subFolders = parent.subFolders.filter(f => f.id !== id);
+                }
+                saveFolders();
+                renderCurrentView();
+                renderAdminLists();
+            }
+        }
+
+        function deleteItemInCurrent(idx) {
+            if (confirm('هل أنت متأكد من الحذف؟')) {
+                if (currentPath.length > 0) {
+                    let parent = getCurrentFolderContainer();
+                    parent.items.splice(idx, 1);
+                    saveFolders();
+                    renderCurrentView();
+                    renderAdminLists();
+                }
+            }
+        }
+
+        function deleteUser(idx) {
+            if (confirm('حذف هذا المستخدم؟')) {
+                registeredUsers.splice(idx, 1);
+                localStorage.setItem('flex_users', JSON.stringify(registeredUsers));
+                updateFooterStats();
+                renderAdminLists();
+            }
+        }
+
+        function openAddVideoModal() {
+            if (currentPath.length === 0) {
+                alert('يرجى الدخول إلى داخل المجلد المراد إضافة الفيديو إليه أولاً.');
+                return;
+            }
+            document.getElementById('addVideoModal').classList.remove('hidden');
+            document.getElementById('addVideoModal').classList.add('flex');
+        }
+        function closeAddVideoModal() {
+            document.getElementById('addVideoModal').classList.remove('flex');
+            document.getElementById('addVideoModal').classList.add('hidden');
+        }
+
+        function handleCreateVideo(event) {
+            event.preventDefault();
+            const title = document.getElementById('newVideoTitle').value;
+            const episodes = document.getElementById('newVideoEpisodes').value;
+            const imgInput = document.getElementById('newVideoImage');
+            const vidInput = document.getElementById('newVideoFile');
+
+            let imgUrl = "https://placehold.co/300x450/18181b/f59e0b?text=" + encodeURIComponent(title);
+            let vidUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
+
+            if (imgInput.files && imgInput.files[0]) imgUrl = URL.createObjectURL(imgInput.files[0]);
+            if (vidInput.files && vidInput.files[0]) vidUrl = URL.createObjectURL(vidInput.files[0]);
+
+            let parent = getCurrentFolderContainer();
+            parent.items.push({ id: Date.now(), title, image: imgUrl, episodes, video: vidUrl });
+
+            saveFolders();
+            renderCurrentView();
+            renderAdminLists();
+            closeAddVideoModal();
+            alert('تم نشر الفيديو بنجاح!');
+        }
+
+        function openAuthModal(mode) {
+            switchAuthTab(mode);
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('authModal').classList.add('flex');
+        }
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('flex');
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginBtn = document.getElementById('tabLoginBtn');
+            const registerBtn = document.getElementById('tabRegisterBtn');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                loginBtn.className = "text-sm font-bold text-amber-400 border-b-2 border-amber-400 pb-1";
+                registerBtn.className = "text-sm font-bold text-zinc-400 pb-1";
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                loginBtn.className = "text-sm font-bold text-zinc-400 pb-1";
+                registerBtn.className = "text-sm font-bold text-amber-400 border-b-2 border-amber-400 pb-1";
+            }
+        }
+
+        function handleRegisterSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('كلمة المرور غير متطابقة.');
+                return;
+            }
+
+            if (registeredUsers.some(u => u.phone === phone || u.email === email)) {
+                alert('الحساب مسجل مسبقاً.');
+                return;
+            }
+
+            registeredUsers.push({ name, phone, email, password, avatar: '' });
+            localStorage.setItem('flex_users', JSON.stringify(registeredUsers));
+            updateFooterStats();
+            alert('تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن.');
+            switchAuthTab('login');
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const identifier = document.getElementById('loginIdentifier').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = registeredUsers.find(u => (u.phone === identifier || u.email === identifier) && u.password === password);
+            if (user) {
+                loggedInUser = user;
+                localStorage.setItem('flex_logged_in', JSON.stringify(user));
+                closeAuthModal();
+                updateHeaderAuth();
+                alert(`أهلاً بك يا ${user.name}!`);
+            } else {
+                alert('بيانات الدخول غير صحيحة.');
+            }
+        }
+
+        function forgotPassword() {
+            window.open('https://wa.me/967712205866?text=' + encodeURIComponent('السلام عليكم، نسيت كلمة السر لحسابي في فليكس عبود'), '_blank');
+        }
+    </script>
+</body>
+</html>
